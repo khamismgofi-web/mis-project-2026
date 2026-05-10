@@ -3,8 +3,8 @@
 fastapi==0.111.0
 uvicorn[standard]==0.29.0
 
-#sqlalchmey latest version,alembic for db migration asyncio engine
-sqlalchmey==2.0.49
+#sqlalchemy latest version,alembic for db migration asyncio engine
+sqlalchemy==2.0.49
 alembic==1.13.1
 asyncpg==0.29.0
 

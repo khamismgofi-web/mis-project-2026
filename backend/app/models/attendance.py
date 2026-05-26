@@ -2,8 +2,8 @@ from sqlalchemy.orm import Mapped,mapped_column,relationship
 from sqlalchemy import Column,Interger,String,Float,ForeignKey
 from app.core.database import Base
 
-class Employee(Base):
-    __tablename__="Employee"
+class Attendance(Base):
+    __tablename__="Attendance"
     id:Mapped[int]=mapped_column(primary_key=True)
     name:Mapped[str]=mapped_column(String(100),nullable=False)
     email:Mapped[str]=mapped_column(String(100),nullable=False)

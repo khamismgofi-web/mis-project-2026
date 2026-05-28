@@ -11,4 +11,4 @@ class User(Base):
     __tablename__="users"
 
     id:Mapped[uuid.UUID] = mapped_column(Interger,primary_key=True,index=True)
-    email:Mapped[str]= Column(StringS)
+    email:Mapped[str]= Column(String)

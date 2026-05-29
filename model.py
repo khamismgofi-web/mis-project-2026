@@ -50,5 +50,5 @@ class user(Base):
     id = Column(Integer, nullable=False, primary_key=True)
     username = Column(String(100), unique= True, nullable = False)
     pasword = Column(String(25), nullable = False, unique = True)
-    role = column(sring(100), unique = True)
+    role = column(sring(100), unique = True) 
 

@@ -5,4 +5,4 @@ DATABASE_URL = "sqlite:///mis.db"
 
 engine = create_engine(DATABASE_URL)
 
-SessionLocal = sessionmaker(bind=engine)
+SessionLocal = sessionmaker(bind=engine) 

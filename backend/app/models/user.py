@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped,mapped_column
-from sqlalchemy import Column,Interger,String,Float,ForeignKey,uuid
+from sqlalchemy import Column,Integer,String,Float,ForeignKey,uuid
 from app.core.database import Base
 import uuid
 

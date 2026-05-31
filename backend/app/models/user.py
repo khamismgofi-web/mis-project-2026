@@ -1,10 +1,8 @@
-from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, uuid
-from sqlalchemy.orm import declarative_base
-from datetime import datetime
-from app.core.database import Base
-import uuid
+import enum
 
-Base = declarative_base()
+from sqlalchemy import Column, Integer, String
+from app.core.database import Base
+
 
 class USerRole(str,enum.Enum):
     adimn="ADIMN"

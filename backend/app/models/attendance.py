@@ -1,15 +1,12 @@
 from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String
-from sqlalchemy.orm import declarative_base
 from app.core.database import Base
-from datetime import datetime
 
-
-Base = declarative_base()
 
 class Attendance(Base):
-    __tablename__ = "attendance"
+    __tablename__ = "Attendance"
 
-    id = Column(Integer, ForeignKey("employees.id"))
+    id = Column(Integer, primary_key=True)
+    employee_id = Column(Integer, ForeignKey("Employees.id"), nullable=False)
 
     date = Column(Date, nullable= False)
     status = Column(String(20))

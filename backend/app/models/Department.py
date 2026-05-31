@@ -1,14 +1,10 @@
 from app.core.database import Base
-from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Float
-from sqlalchemy.orm import declarative_base
-
-
-Base = declarative_base()
+from sqlalchemy import Column, String
 
 
 class Department(Base):
-    __tablename__ = "department"
+    __tablename__ = "Department"
 
-    department_name = Column(String, primary_key= True, unique=True)
-    head_of_department = Column(String, )
+    name = Column(String, primary_key=True, unique=True)
+    head_of_department = Column(String)
     activity = Column(String(100), nullable=False)

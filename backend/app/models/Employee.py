@@ -1,11 +1,5 @@
 from app.core.database import Base
-from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String
-from sqlalchemy.orm import declarative_base
-
-from datetime import datetime
-
-
-Base = declarative_base()
+from sqlalchemy import Column, ForeignKey, Integer, String
 
 class Employee(Base):
     __tablename__ = "Employees"

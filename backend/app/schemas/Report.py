@@ -1,7 +1,7 @@
 from pydantic import BaseModel,EmailStr
 from typing import Optional
 
-class RepotCreat(BaseModel):
+class Report_Create(BaseModel):
     title:str
     description:str
 
@@ -10,6 +10,6 @@ class ReportResponse(BaseModel):
     title: str
     description:str
 
-    
+
     class config:
         from_attributes=True

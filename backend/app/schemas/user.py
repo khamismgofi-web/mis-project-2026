@@ -4,11 +4,11 @@ from typing import Optional
 class UserCreate(BaseModel):
     name:str
     email:EmailStr
-    password:str
+    hash_password:str
 
 class UserResponse(BaseModel):
     id:int
-    name:set
+    name:str
     email:EmailStr
 
 

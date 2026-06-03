@@ -5,9 +5,11 @@ import heroImg from './assets/hero.png'
 import './App.css'
 
 function App() {
+  const title = 'Employee Management System';
   return (
     <div>
-      <h1>hello React!</h1>
+      <h1>Welcome {title}</h1>
+      
     </div>
   );
 }

@@ -1,7 +1,9 @@
-from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import Mapped,mapped_column
+from sqlalchemy import Column,Integer,String,Float,ForeignKey, DateTime
 from app.core.database import Base
-
 from datetime import datetime
+from sqlalchemy.orm import relationship
+
 
 
 class Report(Base):

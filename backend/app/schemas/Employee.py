@@ -16,4 +16,3 @@ class EmployeeResponse(BaseModel):
 
     class config:
         from_attributes=True
-        

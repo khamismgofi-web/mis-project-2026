@@ -1,12 +1,29 @@
+from sqlalchemy.orm import Mapped,mapped_column, relationship
+from sqlalchemy import Column,Integer,String,Float,ForeignKey
 from app.core.database import Base
-from sqlalchemy import Column, ForeignKey, Integer, String
+
+# app/models/employee.py
+
+
 
 class Employee(Base):
-    __tablename__ = "Employees"
+    __tablename__ = "employees"
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String(50), nullable=False)
-    email = Column(String(50), unique=True)
-    position = Column(String(25))
-    salary = Column(Integer)
-    department_name = Column(String, ForeignKey("Department.name"))
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+
+    user_id: Mapped[int] = mapped_column(nullable=False)
+
+    department_id: Mapped[int] = mapped_column(
+        ForeignKey("departments.id"),
+        nullable=False
+    )
+
+    position: Mapped[str] = mapped_column(String(100), nullable=False)
+
+    salary: Mapped[float] = mapped_column(Float, nullable=False)
+
+    department = relationship("Department", back_populates="employees")
+
+    attendances = relationship("Attendance", back_populates="employee")
+
+    reports = relationship("Report", back_populates="creator")

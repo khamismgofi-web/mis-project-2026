@@ -1,24 +1,14 @@
-from sqlalchemy.orm import Mapped,mapped_column, relationship
-from sqlalchemy import Column,Integer,String,Float,ForeignKey,  Date,Text
+from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String
 from app.core.database import Base
 
 
-
-
-# app/models/attendance.py
-
-
 class Attendance(Base):
-    __tablename__ = "attendances"
+    __tablename__ = "Attendance"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id = Column(Integer, primary_key=True)
+    employee_id = Column(Integer, ForeignKey("Employees.id"), nullable=False)
 
-    employee_id: Mapped[int] = mapped_column(
-        ForeignKey("employees.id"),
-        nullable=False
-    )
-
-
-    status: Mapped[str] = mapped_column(String(50), nullable=False)
-
-    employee = relationship("Employee", back_populates="attendances")
+    date = Column(Date, nullable= False)
+    status = Column(String(20))
+    check_in = Column(DateTime)
+    check_out = Column(DateTime)

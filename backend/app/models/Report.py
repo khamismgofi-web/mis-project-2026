@@ -9,19 +9,8 @@ from sqlalchemy.orm import relationship
 class Report(Base):
     __tablename__ = "reports"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
-
-    title: Mapped[str] = mapped_column(String(255), nullable=False)
-
-    created_by: Mapped[int] = mapped_column(
-        ForeignKey("employees.id"),
-        nullable=False
-    )
-
-    created_at: Mapped[DateTime] = mapped_column(
-        DateTime,
-        default=datetime.utcnow,
-        nullable=False
-    )
-
-    creator = relationship("Employee", back_populates="reports")
+    id = Column(Integer, nullable=False, primary_key= True)
+    employee_id = Column(Integer, ForeignKey("Employees.id"), nullable=False)
+    position = Column(String(25), nullable=False)
+    description = Column(String(300), nullable= True)
+    created_at = Column(DateTime, default= datetime.utcnow)        

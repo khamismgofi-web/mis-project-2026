@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Mapped,mapped_column
 from sqlalchemy import Column,Integer,String,Float,ForeignKey,UUID,Boolean,DateTime,func
 from app.core.database import Base
-import uuid
+
 
 class USerRole(Base):
     __tablename__ = "user_roles"
@@ -9,7 +9,7 @@ class USerRole(Base):
     name: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
                                       
 class User(Base):
-    __tablename__="users"
+    __tablename__ = "users"
 
     id:Mapped[uuid.UUID] = mapped_column(UUID,primary_key=True,index=True)
     email:Mapped[str]= mapped_column(String(200),unique=True,nullable=False,index=True)

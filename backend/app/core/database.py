@@ -1,12 +1,23 @@
 import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker,declarative_base
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
+from sqlalchemy.orm import declarative_base, sessionmaker
 
 load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")
-engine=create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(autocommit=False,autoflush=False,bind=engine)
 
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql://postgres:password@localhost:5432/mis_db",
+)
+
+engine = create_engine(DATABASE_URL, echo=True)
 Base = declarative_base()
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+def init_db():
+    Base.metadata.create_all(bind=engine)
+
+def get_session():
+    with SessionLocal() as session:
+        yield session

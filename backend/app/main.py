@@ -1,25 +1,18 @@
-from fastapi import FastAPI
-from app.models.employee import Employee
-from app.models.user import User
-from fastapi.security import APIKeyHeader
-from app.database import Base, engine
+from fastapi import FastAPI 
+from app.api import attendance, Report, user, Department, Employee, auth
 
-try:
-    from app.models import employee, attendance, user
-except ImportError:
-    from app.models.employee import Employee
-    from app.models.user import User
-Base.metadata.create_all(bind=engine)
+app = FastAPI(
+    title="Management Information System API",
+    description="API for the Management Information System (MIS) project",
+    version="1.0.0"
+)
 
-app = FastAPI(title="Management Information System API")
-
-oauth2_scheme = APIKeyHeader(name="Authorization", auto_error=False)
-
-from app.api.auth import router as auth_router
-from app.api.employees import router as employees_router
-
-app.include_router(auth_router, prefix="/auth")
-app.include_router(employees_router, prefix="/employees")
+app.include_router(auth.router)
+app.include_router(user.router, prefix="/users", tags=["users"])
+app.include_router(attendance.router, prefix="/attendance", tags=["attendance"])
+app.include_router(Report.router, prefix="/reports", tags=["reports"])
+app.include_router(Department.router, prefix="/departments", tags=["departments"])
+app.include_router(Employee.router, prefix="/employees", tags=["employees"])
 
 @app.get("/")
 def read_root():

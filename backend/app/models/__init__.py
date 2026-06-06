@@ -1,15 +1,14 @@
-#SQlAlchemy ORM models will be defined here
-
-from .Employee import Employee
-from .attendance import Attendance
-from .Report import Report
+from .attendance import Attendance, AttendanceStatus
+from .department import Department
+from .employee import Employee
+from .report import Report
 from .user import User
-from .Department import Department
 
 __all__ = [
+    "Department",
     "Employee",
-    "Attendance",
     "Report",
     "User",
-    "Department",
-    ]
+    "Attendance",
+    "AttendanceStatus",
+]

@@ -1,29 +1,19 @@
 import uuid
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.security import create_access_token, hash_password, verify_password
 from app.models.user import User
-from app.schemas.user import (
-    UserRegister,
-    UserLogin,
-    UserResponse,
-    Token,
-)
-
+from app.schemas.user import UserRegister, UserLogin, UserResponse, Token
 
 router = APIRouter(
     prefix="/auth",
     tags=["Auth"],
 )
 
-
 def get_user_by_email(db: Session, email: str) -> User | None:
     return db.query(User).filter(User.email == email).first()
-
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def register_user(request: UserRegister, db: Session = Depends(get_db)):
@@ -45,7 +35,6 @@ def register_user(request: UserRegister, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
     return user
-
 
 @router.post("/login", response_model=Token)
 def login_user(request: UserLogin, db: Session = Depends(get_db)):
@@ -69,5 +58,5 @@ def login_user(request: UserLogin, db: Session = Depends(get_db)):
             "user_id": str(user.id),
         }
     )
-    return Token(access_token=access_token, token_type=settings.TOKEN_PREFIX.lower())
-
+   
+    return Token(access_token=access_token, token_type=getattr(settings, "TOKEN_PREFIX", "Bearer").lower())

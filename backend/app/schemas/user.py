@@ -3,6 +3,12 @@ from typing import Optional
 from uuid import UUID
 
 
+class UserRegisterSchema(BaseModel):
+    username: str
+    email: EmailStr
+    password: str
+
+
 class UserRegister(BaseModel):
     email: EmailStr
     password: str

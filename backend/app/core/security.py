@@ -1,11 +1,8 @@
-﻿from datetime import datetime, timedelta
+from datetime import datetime, timedelta
 from typing import Any, Dict, Optional
-
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-
 from app.core.config import settings
-
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -35,3 +32,11 @@ def decode_access_token(token: str) -> Dict[str, Any]:
         return payload
     except JWTError as exc:
         raise exc
+
+
+def decode_token(token: str) -> Optional[str]:
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY.get_secret_value(), algorithms=[settings.ALGORITHM])
+        return payload.get("sub")
+    except JWTError:
+        return None

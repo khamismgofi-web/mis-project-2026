@@ -1,26 +1,41 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import login from "./pages/login";
-import AdminDashboard from "./pages/AdminDashboard";
-import EmployeeDashboard from "./pages/EmployeeDashboard"
-import PrivateRoutes from "./utils/PrivateRoutes";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import Login from './pages/login'
+import Welcome from './pages/Welcome'
+import AdminDashboard from './pages/AdminDashboard'
+import EmployeeDashboard from './pages/EmployeeDashboard'
+import PrivateRoutes from './utils/PrivateRoutes'
+import RoleBaseRoute from './utils/RoleBaseRoutes'
 
 function App() {
   return (
     <BrowserRouter>
-    <Routes>
-    <Route path="/" element={<Navigate to="/admin-dashboard" />}></Route>
-    <Route path="/login" element={<login />}></Route>
-    <Route path="/admin-dashboard" element={
-      <PrivateRoutes>
-        <RoleBaseRoute requiredRole={["admin"]}>
-        <AdminDashboard />
-        </RoleBaseRoute>
-      </PrivateRoutes>
-    }></Route>
-    <Route path="/employee-dashboard" element={<EmployeeDashboard />}></Route>
-    </Routes>
+      <Routes>
+        <Route path="/" element={<Welcome />} />
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/admin-dashboard"
+          element={
+            <PrivateRoutes>
+              <RoleBaseRoute requiredRole={["admin"]}>
+                <AdminDashboard />
+              </RoleBaseRoute>
+            </PrivateRoutes>
+          }
+        />
+        <Route
+          path="/employee-dashboard"
+          element={
+            <PrivateRoutes>
+              <RoleBaseRoute requiredRole={["employee", "admin"]}>
+                <EmployeeDashboard />
+              </RoleBaseRoute>
+            </PrivateRoutes>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </BrowserRouter>
-  );
+  )
 }
 
 export default App

@@ -1,12 +1,26 @@
 import React from 'react'
-import { useAuth } from '../../context/authContext'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/authContext'
 
 const Navibar = () => {
-  const {user} = useAuth()
+  const navigate = useNavigate()
+  const { user, setUser } = useAuth()
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('misUser')
+    setUser(null)
+    navigate('/login', { replace: true })
+  }
+
   return (
-    <div className='flex justify-between h-12 bg-teal-500'>
-      <p>Welcome {user.name}</p>
-      <button>Logout</button>
+    <div className="flex items-center justify-between h-16 bg-slate-900 px-6 text-slate-100 shadow-sm">
+      <p className="text-sm font-medium">Welcome {user?.name ?? 'User'}</p>
+      <button
+        onClick={handleLogout}
+        className="rounded-full border border-slate-700 bg-slate-800 px-4 py-2 text-sm transition hover:bg-slate-700"
+      >
+        Logout
+      </button>
     </div>
   )
 }

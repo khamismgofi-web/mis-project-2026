@@ -1,35 +1,36 @@
 import React from 'react'
-import {NavLink} from 'react-router-dom'
-import {FaTachometerAlt, FaBuilding, FaUsers, FaCalendarAlt, FaMoneyBillWave} from 'react-icons/fa'
+import { NavLink } from 'react-router-dom'
+
+const menuItems = [
+  { label: 'Dashboard', to: '/admin-dashboard' },
+  { label: 'Employees', to: '/admin-dashboard' },
+  { label: 'Departments', to: '/admin-dashboard' },
+  { label: 'Leave', to: '/admin-dashboard' },
+  { label: 'Payroll', to: '/admin-dashboard' },
+]
 
 const AdminSidebar = () => {
   return (
-    <div className='bg-gray-800 text-white h-screen fixed left-0 top-0 bottom-0 space-y-2 w-64'>
-      <div className='text-2xl text-center font-poppins'>
-        <h3 className='text-2xl text-center font-poppins'> Employee MS</h3>
+    <aside className="fixed left-0 top-0 z-10 h-screen w-64 bg-slate-950 text-slate-100 shadow-xl">
+      <div className="py-8 text-center">
+        <h3 className="text-2xl font-semibold">Employee MS</h3>
       </div>
-      <div className='px-4'>
-        <Navlink to="/adim-dashboard" className={({isActive}) => '${isActive ? "bg-teal-500" : ""}flex items-center space-x-4 block py-2.5 px-4 rounded>
-          <FaTachometerAlt />
-          <span>Dashboard</span>
-        </Navlink>
-        <Navlink to="/adim-dashboard" className="flex items-center space-x-4 block py-2.5 px-4 rounded">
-          <FaUsers />
-          <span>Employee</span>
-        </Navlink>
-        <Navlink to="/adim-dashboard" className="flex items-center space-x-4 block py-2.5 px-4 rounded">
-          <FaBuilding />
-          <span>Department</span>
-              </Navlink>
-              <NavLink to="admin-dashboard" className="flex items-center space-x-4 block py-2.5 px-4 rounded">
-                <FaCalendarAlt />
-                <span>Leave</span>
-              </NavLink>
-              <NavLink to="/admin-dashboard" className="flex items-center space-x-4 block py-2.5 px-4 rounded">
-              <FaMoneyBillWave />
-              </NavLink>
+      <div className="space-y-2 px-4">
+        {menuItems.map(({ label, to }) => (
+          <NavLink
+            key={label}
+            to={to}
+            className={({ isActive }) =>
+              `block rounded-2xl px-4 py-3 text-sm font-medium transition ${
+                isActive ? 'bg-sky-600 text-white' : 'text-slate-300 hover:bg-slate-800'
+              }`
+            }
+          >
+            {label}
+          </NavLink>
+        ))}
       </div>
-    </div>
+    </aside>
   )
 }
 

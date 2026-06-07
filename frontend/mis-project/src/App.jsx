@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Login from './pages/login'
-import Welcome from './pages/Welcome'
 import AdminDashboard from './pages/AdminDashboard'
 import EmployeeDashboard from './pages/EmployeeDashboard'
 import PrivateRoutes from './utils/PrivateRoutes'
@@ -10,7 +9,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Welcome />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route
           path="/admin-dashboard"

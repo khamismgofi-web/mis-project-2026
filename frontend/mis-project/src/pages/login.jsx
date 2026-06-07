@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/authContext'
 import './login.css'
-import bgImage from '../assets/login-bg.jpg'
 
 function Login() {
   const navigate = useNavigate()
@@ -39,24 +38,21 @@ function Login() {
     navigate(userRole === 'admin' ? '/admin-dashboard' : '/employee-dashboard', { replace: true })
   }
 
-  const customBgStyle = {
-    backgroundImage: `linear-gradient(rgba(15, 23, 42, 0.65), rgba(15, 23, 42, 0.65)), url(${bgImage})`,
-  }
-
   return (
-    <div className="login-page-wrapper" style={customBgStyle}>
+    <div className="login-page-wrapper">
       <div className="login-card-box">
-        {/* Login header */}
         <div className="login-header-group">
-          <h2 className="login-main-title">Employee Management System</h2>
-          <p className="login-sub-title">Enter your credentials to continue.</p>
+          <h2 className="login-main-title">Employee Management</h2>
+          <p className="login-sub-title">Sign in to your account to continue.</p>
         </div>
 
-        {/* Login form */}
         <form onSubmit={handleSubmit} className="login-form-element">
           <div className="form-input-field">
-            <label className="form-field-label">Email</label>
+            <label className="form-field-label" htmlFor="email">
+              Email address
+            </label>
             <input
+              id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -67,23 +63,30 @@ function Login() {
           </div>
 
           <div className="form-input-field">
-            <label className="form-field-label">Password</label>
+            <label className="form-field-label" htmlFor="password">
+              Password
+            </label>
             <input
+              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
+              placeholder="Enter your password"
               className="form-text-input"
               required
             />
           </div>
 
-          {error && <p className="text-sm text-red-300 mb-4">{error}</p>}
+          {error && <p className="login-error-text">{error}</p>}
 
           <button type="submit" className="login-submit-button">
-            Login
+            Sign in
           </button>
         </form>
+
+        <p className="login-footer-note">
+          Use an email containing <strong>admin</strong> to sign in as administrator.
+        </p>
       </div>
     </div>
   )

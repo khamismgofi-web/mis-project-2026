@@ -1,9 +1,12 @@
 import React from 'react'
+import { useAuth } from '../../context/authContext'
 
-function Navibar() {
+const Navibar = () => {
+  const {user} = useAuth()
   return (
-    <div>
-      
+    <div className='flex justify-between h-12 bg-teal-500'>
+      <p>Welcome {user.name}</p>
+      <button>Logout</button>
     </div>
   )
 }

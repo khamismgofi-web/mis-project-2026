@@ -51,7 +51,7 @@ function Welcome() {
               </p>
             </div>
             <div className="rounded-3xl border border-slate-800/80 bg-slate-900/90 p-6 shadow-2xl shadow-slate-950/30 backdrop-blur">
-              <h2 className="text-xl font-semibold text-white">Fast onboarding</h2>
+              <h2 className="text-xl font-semibold text-white">Fast on boarding</h2>
               <p className="mt-3 text-sm leading-6 text-slate-300">
                 Key actions are surfaced immediately so users can sign in and start working with fewer clicks.
               </p>

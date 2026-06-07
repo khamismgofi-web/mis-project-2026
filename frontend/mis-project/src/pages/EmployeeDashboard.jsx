@@ -1,8 +1,16 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/authContext'
 
 const EmployeeDashboard = () => {
-  const { user } = useAuth()
+  const navigate = useNavigate()
+  const { user, setUser } = useAuth()
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('misUser')
+    setUser(null)
+    navigate('/login', { replace: true })
+  }
 
   const monthlyData = [
     { month: 'Jan', progress: 72, attendance: 82 },
@@ -59,9 +67,17 @@ const EmployeeDashboard = () => {
                 Your dashboard summarizes profile details, attendance, salary, and assigned tasks with a clear view of upcoming deadlines and holiday days.
               </p>
             </div>
-            <div className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 shadow-sm">
-              <p className="text-sm text-slate-500">Current working status</p>
-              <p className="mt-3 text-2xl font-semibold text-slate-900">On track</p>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <button
+                onClick={handleLogout}
+                className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+              >
+                Logout
+              </button>
+              <div className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 shadow-sm">
+                <p className="text-sm text-slate-500">Current working status</p>
+                <p className="mt-3 text-2xl font-semibold text-slate-900">On track</p>
+              </div>
             </div>
           </div>
         </section>

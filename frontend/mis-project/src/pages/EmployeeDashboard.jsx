@@ -1,16 +1,29 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/authContext'
+import client from '../api/client'
 
 const EmployeeDashboard = () => {
   const navigate = useNavigate()
-  const { user, setUser } = useAuth()
+  const { user, logout } = useAuth()
+  const [attendanceSummary, setAttendanceSummary] = useState([])
 
   const handleLogout = () => {
-    window.localStorage.removeItem('misUser')
-    setUser(null)
+    logout()
     navigate('/login', { replace: true })
   }
+
+  useEffect(() => {
+    const fetchSummary = async () => {
+      try {
+        const response = await client.get('/api/reports/attendance-summary')
+        setAttendanceSummary(response.data)
+      } catch (error) {
+        console.warn('Unable to fetch attendance summary', error)
+      }
+    }
+    fetchSummary()
+  }, [])
 
   const monthlyData = [
     { month: 'Jan', progress: 72, attendance: 82 },
@@ -101,6 +114,21 @@ const EmployeeDashboard = () => {
             <p className="text-sm font-semibold text-slate-500">Attendance</p>
             <p className="mt-6 text-3xl font-semibold text-slate-900">92%</p>
             <p className="mt-2 text-sm text-slate-500">This month’s on-time presence</p>
+          </div>
+
+          <div className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm">
+            <p className="text-sm font-semibold text-slate-500">Attendance summary</p>
+            <div className="mt-4 space-y-3">
+              {attendanceSummary.length === 0 ? (
+                <p className="rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-4 text-slate-600">No attendance summary available yet.</p>
+              ) : (
+                attendanceSummary.map((item) => (
+                  <div key={item.status} className="rounded-3xl bg-slate-50 p-3 text-sm text-slate-700">
+                    <span className="font-semibold text-slate-900">{item.status}</span>: {item.count}
+                  </div>
+                ))
+              )}
+            </div>
           </div>
 
           <div className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm">

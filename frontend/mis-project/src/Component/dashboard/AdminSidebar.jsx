@@ -3,10 +3,10 @@ import { NavLink } from 'react-router-dom'
 
 const menuItems = [
   { label: 'Dashboard', to: '/admin-dashboard' },
-  { label: 'Employees', to: '/admin-dashboard' },
-  { label: 'Departments', to: '/admin-dashboard' },
-  { label: 'Leave', to: '/admin-dashboard' },
-  { label: 'Payroll', to: '/admin-dashboard' },
+  { label: 'Employees', to: '/admin/employees' },
+  { label: 'Departments', to: '/admin/departments' },
+  { label: 'Attendance', to: '/admin/attendance' },
+  { label: 'Reports', to: '/admin/reports' },
 ]
 
 const AdminSidebar = () => {

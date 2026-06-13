@@ -1,17 +1,45 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/authContext'
 import AdminSidebar from '../Component/dashboard/AdminSidebar'
 import Navibar from '../Component/Navibar'
+import client from '../api/client'
 
 const AdminDashboard = () => {
+  const navigate = useNavigate()
   const { user } = useAuth()
+  const [stats, setStats] = useState([
+    { label: 'Employees', value: 0, description: 'Active employees in the system' },
+    { label: 'Departments', value: 0, description: 'Organized business units' },
+    { label: 'Attendance', value: 0, description: 'Recorded attendance entries' },
+    { label: 'Reports', value: 0, description: 'Department reports available' },
+  ])
+  const [headcount, setHeadcount] = useState([])
 
-  const stats = [
-    { label: 'Employees', value: 128, description: 'Active employees in the system' },
-    { label: 'Departments', value: 12, description: 'Organized business units' },
-    { label: 'Attendance', value: 84, description: 'Today’s recorded attendance' },
-    { label: 'Reports', value: 18, description: 'Pending review items' },
-  ]
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const [employeesRes, departmentsRes, attendanceRes, headcountRes] = await Promise.all([
+          client.get('/employees'),
+          client.get('/api/departments'),
+          client.get('/api/reports/attendance-summary'),
+          client.get('/api/reports/headcount-by-department'),
+        ])
+
+        setStats([
+          { label: 'Employees', value: employeesRes.data.length, description: 'Active employees in the system' },
+          { label: 'Departments', value: departmentsRes.data.length, description: 'Organized business units' },
+          { label: 'Attendance', value: attendanceRes.data.reduce((sum, item) => sum + Number(item.count), 0), description: 'Recorded attendance entries' },
+          { label: 'Reports', value: headcountRes.data.length, description: 'Department reports available' },
+        ])
+        setHeadcount(headcountRes.data)
+      } catch (error) {
+        console.warn('Unable to fetch admin dashboard metrics', error)
+      }
+    }
+
+    fetchDashboardData()
+  }, [])
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(34,197,94,0.14),transparent_20%),radial-gradient(circle_at_bottom_right,rgba(56,189,248,0.14),transparent_22%),#eff6ff] text-slate-900">
@@ -73,10 +101,18 @@ const AdminDashboard = () => {
                     Add, update, or review employee profiles based on the employee backend service.
                   </p>
                   <div className="mt-6 space-y-3">
-                    <button className="w-full rounded-2xl bg-sky-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-sky-400">
+                    <button
+                      type="button"
+                      onClick={() => navigate('/admin/employees')}
+                      className="w-full rounded-2xl bg-sky-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-sky-400"
+                    >
                       View employees
                     </button>
-                    <button className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-5 py-3 text-sm text-slate-700 transition hover:border-slate-400">
+                    <button
+                      type="button"
+                      onClick={() => navigate('/admin/employees')}
+                      className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-5 py-3 text-sm text-slate-700 transition hover:border-slate-400"
+                    >
                       Create employee
                     </button>
                   </div>
@@ -88,10 +124,18 @@ const AdminDashboard = () => {
                     Align departments with contact data and business structure from the backend department API.
                   </p>
                   <div className="mt-6 space-y-3">
-                    <button className="w-full rounded-2xl bg-sky-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-sky-400">
+                    <button
+                      type="button"
+                      onClick={() => navigate('/admin/departments')}
+                      className="w-full rounded-2xl bg-sky-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-sky-400"
+                    >
                       View departments
                     </button>
-                    <button className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-5 py-3 text-sm text-slate-700 transition hover:border-slate-400">
+                    <button
+                      type="button"
+                      onClick={() => navigate('/admin/departments')}
+                      className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-5 py-3 text-sm text-slate-700 transition hover:border-slate-400"
+                    >
                       Add department
                     </button>
                   </div>
@@ -103,10 +147,18 @@ const AdminDashboard = () => {
                     Track attendance and review reports to keep the team aligned with backend attendance and report endpoints.
                   </p>
                   <div className="mt-6 space-y-3">
-                    <button className="w-full rounded-2xl bg-sky-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-sky-400">
+                    <button
+                      type="button"
+                      onClick={() => navigate('/admin/attendance')}
+                      className="w-full rounded-2xl bg-sky-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-sky-400"
+                    >
                       Mark attendance
                     </button>
-                    <button className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-5 py-3 text-sm text-slate-700 transition hover:border-slate-400">
+                    <button
+                      type="button"
+                      onClick={() => navigate('/admin/reports')}
+                      className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-5 py-3 text-sm text-slate-700 transition hover:border-slate-400"
+                    >
                       Review reports
                     </button>
                   </div>

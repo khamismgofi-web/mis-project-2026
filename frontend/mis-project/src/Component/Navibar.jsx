@@ -4,11 +4,10 @@ import { useAuth } from '../context/authContext'
 
 const Navibar = () => {
   const navigate = useNavigate()
-  const { user, setUser } = useAuth()
+  const { user, logout } = useAuth()
 
   const handleLogout = () => {
-    window.localStorage.removeItem('misUser')
-    setUser(null)
+    logout()
     navigate('/login', { replace: true })
   }
 

@@ -1,5 +1,8 @@
-from fastapi import FastAPI 
-from app.api import attendance, Report, user, Department, Employee, auth
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from app.api import attendance, reports, user, departments, employees, auth
+from app.core.database import init_db
+import app.models  # Ensure all ORM models are loaded before metadata creation
 
 app = FastAPI(
     title="Management Information System API",
@@ -7,12 +10,29 @@ app = FastAPI(
     version="1.0.0"
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.on_event("startup")
+def startup_event():
+    init_db()
+
 app.include_router(auth.router)
-app.include_router(user.router, prefix="/users", tags=["users"])
-app.include_router(attendance.router, prefix="/attendance", tags=["attendance"])
-app.include_router(Report.router, prefix="/reports", tags=["reports"])
-app.include_router(Department.router, prefix="/departments", tags=["departments"])
-app.include_router(Employee.router, prefix="/employees", tags=["employees"])
+app.include_router(user.router)
+app.include_router(attendance.router)
+app.include_router(reports.router)
+app.include_router(departments.router)
+app.include_router(employees.router)
 
 @app.get("/")
 def read_root():

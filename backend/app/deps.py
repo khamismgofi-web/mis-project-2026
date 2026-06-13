@@ -5,7 +5,7 @@ from app.database import SessionLocal
 from app.core.security import decode_token
 from app.models import User
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/api/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 def get_db():
@@ -17,10 +17,10 @@ def get_db():
 
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
-    username = decode_token(token)
-    if not username:
+    email = decode_token(token)
+    if not email:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-    user = db.query(User).filter(User.username == username).first()
+    user = db.query(User).filter(User.email == email).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
     return user

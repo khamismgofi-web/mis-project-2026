@@ -1,16 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/authContext'
+import { login as apiLogin, getCurrentUser as apiGetCurrentUser } from '../api/auth'
 import './login.css'
 
 function Login() {
   const navigate = useNavigate()
-  const { user, setUser } = useAuth()
+  const { user, login: authLogin } = useAuth()
   const emailRef = useRef(null)
-  const [isSignup, setIsSignup] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [resetMessage, setResetMessage] = useState('')
 
   useEffect(() => {
     if (user) {
@@ -18,9 +19,35 @@ function Login() {
     }
   }, [user, navigate])
 
-  const handleSubmit = (event) => {
+  const getErrorMessage = (error) => {
+    const data = error?.response?.data
+    const detail = data?.detail ?? data?.message
+
+    if (Array.isArray(detail)) {
+      return detail
+        .map((item) => {
+          if (typeof item === 'string') return item
+          if (item?.msg) return item.msg
+          return JSON.stringify(item)
+        })
+        .join('; ')
+    }
+
+    if (typeof detail === 'string') {
+      return detail
+    }
+
+    if (typeof detail === 'object' && detail !== null) {
+      return JSON.stringify(detail)
+    }
+
+    return error?.message || 'Unable to sign in. Please try again.'
+  }
+
+  const handleSubmit = async (event) => {
     event.preventDefault()
     setError('')
+    setResetMessage('')
 
     if (!email || !password) {
       setError('Email and password are required.')
@@ -28,168 +55,88 @@ function Login() {
     }
 
     const normalizedEmail = email.trim().toLowerCase()
-    const userRole = normalizedEmail.includes('admin') ? 'admin' : 'employee'
-    const loggedInUser = {
-      name: normalizedEmail.split('@')[0] || 'User',
-      email: normalizedEmail,
-      role: userRole,
-    }
 
-    window.localStorage.setItem('misUser', JSON.stringify(loggedInUser))
-    setUser(loggedInUser)
-    navigate(userRole === 'admin' ? '/admin-dashboard' : '/employee-dashboard', { replace: true })
+    try {
+      const tokenResponse = await apiLogin(normalizedEmail, password)
+
+      try {
+        window.localStorage.setItem(
+          'misAuth',
+          JSON.stringify({ token: tokenResponse.access_token, token_type: tokenResponse.token_type || 'Bearer' })
+        )
+      } catch (storageError) {
+        console.warn('Unable to persist token before fetching user', storageError)
+      }
+
+      const apiUser = await apiGetCurrentUser()
+      const loggedInUser = {
+        ...apiUser,
+        name: apiUser.username || normalizedEmail.split('@')[0],
+        role: apiUser.is_admin ? 'admin' : 'employee',
+      }
+
+      authLogin(loggedInUser, tokenResponse)
+      navigate(loggedInUser.role === 'admin' ? '/admin-dashboard' : '/employee-dashboard', { replace: true })
+    } catch (error) {
+      setError(getErrorMessage(error))
+    }
+  }
+
+  const handleForgotPassword = () => {
+    setResetMessage('If this email exists, password reset instructions will be sent.')
   }
 
   return (
-    <div className="login-page-wrapper">
-      <div className="login-stage">
-        <header className="login-header">
-          <div className="header-brand">
-            <span className="brand-mark">EP</span>
-            <span className="brand-name">MIS</span>
+    <div className="login-page-container">
+      <div className="login-card">
+        <h2>Welcome Back</h2>
+
+        <form onSubmit={handleSubmit}>
+          <div className="input-group">
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              ref={emailRef}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="name@company.com"
+              className="field-input"
+              required
+            />
           </div>
-          <nav className="header-nav">
-            <a href="#">Home</a>
-            <a href="#">Our products</a>
-            <a href="#">About us</a>
-            <a href="#">Contact us</a>
-          </nav>
-          <button
-            type="button"
-            className="header-signin-button"
-            onClick={() => {
-              setIsSignup(false)
-              emailRef.current?.focus()
+
+          <div className="input-group">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              className="field-input"
+              required
+            />
+          </div>
+
+          <a
+            href="#"
+            className="forgot-password-link"
+            onClick={(e) => {
+              e.preventDefault()
+              handleForgotPassword()
             }}
           >
-            Sign in
+            Forgot Password?
+          </a>
+
+          {resetMessage && <p className="feedback-text">{resetMessage}</p>}
+          {error && <p className="error-text">{error}</p>}
+
+          <button type="submit" className="login-button">
+            Login
           </button>
-        </header>
-
-        <main className="login-card">
-          <section className="login-panel login-form-panel">
-            <div className="tab-row">
-              <button
-                type="button"
-                className={`tab ${!isSignup ? 'active' : ''}`}
-                onClick={() => setIsSignup(false)}
-              >
-                Login
-              </button>
-              <button
-                type="button"
-                className={`tab ${isSignup ? 'active' : ''}`}
-                onClick={() => setIsSignup(true)}
-              >
-                Sign up
-              </button>
-            </div>
-
-            <div className="login-copy-block">
-              <h1 className="login-title">{isSignup ? 'Create your account' : 'Welcome back'}</h1>
-              <p className="login-copy">
-                {isSignup
-                  ? 'Sign up for access to attendance, reports, and your employee dashboard.'
-                  : 'Sign in to your account to manage attendance, view reports, and access your employee dashboard.'}
-              </p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="login-form">
-              <div className="form-group">
-                <label className="form-label" htmlFor="email">
-                  Email address
-                </label>
-                <div className="input-pill">
-                  <span className="input-icon">📧</span>
-                  <input
-                    id="email"
-                    ref={emailRef}
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@company.com"
-                    className="form-input"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label" htmlFor="password">
-                  Password
-                </label>
-                <div className="input-pill">
-                  <span className="input-icon">🔒</span>
-                  <input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
-                    className="form-input"
-                    required
-                  />
-                </div>
-              </div>
-
-              {error && <p className="login-error-text">{error}</p>}
-
-              <button type="submit" className="primary-button">
-                {isSignup ? 'Create account' : 'Login'}
-              </button>
-
-              <p className="forgot-text">
-                {isSignup
-                  ? 'Already have an account? '
-                  : 'Forgot your password? '}
-                <button type="button" className="forgot-link" onClick={() => setIsSignup(!isSignup)}>
-                  {isSignup ? 'Sign in' : 'Create account'}
-                </button>
-              </p>
-            </form>
-          </section>
-
-          <section className="login-panel login-visual-panel">
-            <div className="visual-shapes">
-              <span className="shape large" />
-              <span className="shape medium" />
-            </div>
-            <div className="visual-content">
-              <div className="pc-scene">
-                <div className="pc-monitor">
-                  <div className="monitor-top">
-                    <span className="monitor-light" />
-                    <span className="monitor-light" />
-                    <span className="monitor-light" />
-                  </div>
-                  <div className="monitor-screen">
-                    <div className="screen-header">
-                      <span />
-                      <span />
-                      <span />
-                    </div>
-                    <div className="screen-card">
-                      <div className="card-line short" />
-                      <div className="card-line medium" />
-                      <div className="card-line long" />
-                    </div>
-                    <div className="screen-grid">
-                      <div className="grid-cell" />
-                      <div className="grid-cell" />
-                      <div className="grid-cell" />
-                    </div>
-                    <div className="screen-chart">
-                      <span className="chart-bar tall" />
-                      <span className="chart-bar medium" />
-                      <span className="chart-bar short" />
-                    </div>
-                  </div>
-                </div>
-                <div className="pc-base" />
-              </div>
-            </div>
-          </section>
-        </main>
+        </form>
       </div>
     </div>
   )

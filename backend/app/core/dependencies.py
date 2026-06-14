@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
-from app.core.config import SECRET_KEY, ALGORITHM
+from app.core.config import Settings
 from app.core.database import SessionLocal
 from app.core.security import decode_access_token
 from app.core.exceptions import (UserNotFoundException,
@@ -56,4 +56,7 @@ def required_admin(current_user: User = Depends(get_current_user)):
     return current_user
 
 def required_user(current_user:User = Depends(get_current_user)):
+    user = db.query(User). filter(User.id == int(user_id)).first()
+    if user is None:
+        raise AuthenticationException
     return current_user

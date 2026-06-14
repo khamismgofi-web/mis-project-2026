@@ -2,10 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api import attendance, reports, user, departments, employees, auth
 from app.core.database import init_db
-import app.models  # Ensure all ORM models are loaded before metadata creation
-
+import app.models  
 app = FastAPI(
-    title="Management Information System API",
+    title="Employee Information System API",
     description="API for the Management Information System (MIS) project",
     version="1.0.0"
 )

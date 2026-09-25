@@ -1,23 +1,21 @@
-from fastapi import APIRouter,Depends
-from app.services.user import User
-from app.schemas import user
-from app.models  import user
-from app.core.database import get_db
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-router=APIRouter(
+from app.services.user import get_all_users, create_user as svc_create_user
+from app.schemas.user import UserRegisterSchema, UserResponse
+from app.core.database import get_db
+
+router = APIRouter(
     prefix="/users",
-    tags=["Users"]
+    tags=["Users"],
 )
 
 
+@router.get("/", response_model=list[UserResponse])
+def list_users(db: Session = Depends(get_db)):
+    return get_all_users(db)
 
 
-@router.get("/")
-async def get_users():
-    return {"message": "All users"}
-
-
-@router.post("/user/")
-async def create_user(request:user.User,db:Session=Depends(get_db)):
-    user = User(**request.dict())
-    return user.create_user(db, user)
+@router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+def create_user_endpoint(request: UserRegisterSchema, db: Session = Depends(get_db)):
+    new_user = svc_create_user(db, request)
+    return new_user

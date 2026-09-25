@@ -27,7 +27,9 @@ def create_user(db: Session, user):
     new_user = User(
         username=user.username,
         email=user.email,
-        password=hashed_password
+        password_hash=hashed_password,
+        is_active=True,
+        is_admin=False,
     )
 
     db.add(new_user)

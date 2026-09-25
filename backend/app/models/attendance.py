@@ -1,24 +1,24 @@
-from sqlalchemy.orm import Mapped,mapped_column, relationship
-from sqlalchemy import Column,Integer,String,Float,ForeignKey,  Date,Text
+from datetime import datetime
+import enum
+from sqlalchemy import Column, Date, DateTime, Enum, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 from app.core.database import Base
 
-
-
-
-# app/models/attendance.py
-
+class AttendanceStatus(str, enum.Enum):
+    present = "present"
+    absent = "absent"
+    late = "late"
+    leave = "leave"
 
 class Attendance(Base):
-    __tablename__ = "attendances"
+    __tablename__ = "attendance"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    employee_id = Column(Integer, ForeignKey("employees.id"), nullable=False)
+    date = Column(Date, nullable=False)
+    status = Column(String(20), nullable=False)
+    note = Column(String, nullable=True)
+    check_in = Column(DateTime, nullable=True)
+    check_out = Column(DateTime, nullable=True)
 
-    employee_id: Mapped[int] = mapped_column(
-        ForeignKey("employees.id"),
-        nullable=False
-    )
-
-
-    status: Mapped[str] = mapped_column(String(50), nullable=False)
-
-    employee = relationship("Employee", back_populates="attendances")
+    employee = relationship("Employee", back_populates="attendance")

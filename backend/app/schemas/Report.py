@@ -1,5 +1,6 @@
 from pydantic import BaseModel,EmailStr
 from typing import Optional
+from typing import Optional
 
 class Report_Create(BaseModel):
     title:str
